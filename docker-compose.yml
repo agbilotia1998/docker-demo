@@ -1,0 +1,20 @@
+version: "3.3"
+services:
+  application:
+    container_name: appContainer
+    restart: always
+    build: .
+    ports:
+     - "80:5000"
+    links:
+      - db
+  db:
+    container_name: dbContainer
+    image: mongo
+    restart: always
+    volumes:
+      - db_data:/data/db
+    ports:
+      - "27017:27017"
+volumes:
+  db_data:
