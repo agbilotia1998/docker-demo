@@ -15,8 +15,9 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-app.get("/", () => {
+app.get("/", (req, res) => {
     console.log("Server hit");
+    res.send("request received");
 })
 
 app.post("/api/server", async (req, res) => {
@@ -55,9 +56,14 @@ app.get("/initialize", (req, res) => {
 app.listen(process.env.PORT || 5000, async () => {
     console.log("SERVER STARTED");
     try {
-        // await mongoose.connect("mongodb://host.docker.internal:27017/loadbalancer", { useNewUrlParser: true })
+        // Docker for mac, container talks with host machine [apk --no-cache add curl]
+        await mongoose.connect("mongodb://host.docker.internal:27017/loadbalancer", { useNewUrlParser: true })
+
+        // Within same container db service is running
         // await mongoose.connect("mongodb://localhost:27017/loadbalancer", { useNewUrlParser: true })
-        await mongoose.connect("mongodb://dbContainer:27017/loadbalancer", { useNewUrlParser: true })
+
+        // One container talks with other in same network.
+        // await mongoose.connect("mongodb://dbContainer:27017/loadbalancer", { useNewUrlParser: true })
         console.log("Connected to DB");
     } catch(error) {
         console.log(error);
